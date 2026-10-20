@@ -1,0 +1,52 @@
+appId: com.ooo-scheduler.app
+productName: OOO Scheduler
+copyright: Copyright © 2026 Guransh Deol
+directories:
+  output: dist
+  buildResources: build
+files:
+  - out/**
+  - package.json
+extraResources:
+  - from: resources/scripts
+    to: scripts
+  - from: resources/icon.png
+    to: icon.png
+  - from: resources/tray
+    to: tray
+  - from: build/lucide-LICENSE.txt
+    to: lucide-LICENSE.txt
+asar: true
+
+mac:
+  category: public.app-category.productivity
+  # Ad-hoc signature so the app runs on Apple Silicon without a Developer ID.
+  # Replace with a "Developer ID Application" identity to sign and notarize for wider distribution.
+  identity: '-'
+  # Hardened runtime is only needed for notarization; turn it on together with a real identity.
+  hardenedRuntime: false
+  target:
+    - target: dmg
+      arch: [arm64, x64]
+dmg:
+  artifactName: ${productName}-${version}-mac-${arch}.${ext}
+
+win:
+  target:
+    - target: nsis
+      arch: [x64, arm64]
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  artifactName: ${productName}-${version}-win-${arch}-setup.${ext}
+
+linux:
+  category: Office
+  maintainer: Guransh Deol
+  target:
+    - target: AppImage
+      arch: [x64, arm64]
+    - target: deb
+      arch: [x64, arm64]
+  artifactName: ${productName}-${version}-linux-${arch}.${ext}

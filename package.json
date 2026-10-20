@@ -1,0 +1,44 @@
+{
+  "name": "ooo-scheduler",
+  "productName": "OOO Scheduler",
+  "version": "0.1.0",
+  "description": "Schedule out-of-office replies and calendar blocks across multiple Microsoft 365 accounts.",
+  "author": "Guransh Deol",
+  "license": "MIT",
+  "homepage": "https://github.com/guranshdeol/out-of-office-scheduler",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/guranshdeol/out-of-office-scheduler.git"
+  },
+  "private": true,
+  "main": "out/main/index.js",
+  "scripts": {
+    "electron:install": "node node_modules/electron/install.js",
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
+    "test": "vitest run",
+    "dist": "npm run build && electron-builder",
+    "dist:mac": "npm run build && electron-builder --mac",
+    "dist:win": "npm run build && electron-builder --win",
+    "dist:linux": "npm run build && electron-builder --linux"
+  },
+  "dependencies": {
+    "@azure/msal-node": "^7.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "electron": "^44.9.1",
+    "electron-builder": "^26.15.3",
+    "electron-vite": "^6.0.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.5"
+  }
+}
