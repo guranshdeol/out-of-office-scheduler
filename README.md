@@ -17,6 +17,14 @@
 
 </div>
 
+**▶ 72-second walkthrough**
+
+
+
+https://github.com/user-attachments/assets/e025628a-dbfd-4e26-8349-5f79feb45055
+
+
+
 ---
 
 ## Why
