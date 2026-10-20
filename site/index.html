@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OOO Scheduler: out of office, on every account at once</title>
+    <meta
+      name="description"
+      content="Pick your leave days once. Every Microsoft 365 account you work in gets its out-of-office reply and calendar block. Free and open source for macOS, Windows and Linux."
+    />
+    <meta property="og:title" content="OOO Scheduler" />
+    <meta property="og:description" content="Out of office, on every Microsoft 365 account at once." />
+    <meta property="og:image" content="assets/screenshots/calendar.png" />
+    <meta name="theme-color" content="#08090a" />
+    <link rel="icon" type="image/png" href="assets/icon.png" />
+    <link rel="preconnect" href="https://rsms.me/" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="nav">
+      <div class="wrap nav-inner">
+        <a class="brand" href="#top" aria-label="OOO Scheduler home">
+          <img src="assets/icon.png" alt="" width="24" height="24" />
+          <span>OOO Scheduler</span>
+        </a>
+        <nav class="nav-links" aria-label="Main">
+          <a href="#features">Features</a>
+          <a href="#how">How it works</a>
+          <a href="#faq">FAQ</a>
+          <a href="https://github.com/guranshdeol/out-of-office-scheduler">GitHub</a>
+          <a class="pill-white" href="#download">Download</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero wrap">
+        <p class="eyebrow mono"><span class="dot"></span><span data-version>Free &amp; open source</span></p>
+        <h1>Out of office.<br />Everywhere at once.</h1>
+        <p class="lede">
+          Pick your leave days once. OOO Scheduler sets the auto-reply and the calendar block on every Microsoft 365
+          account you work in: your employer and each of your clients.
+        </p>
+        <div class="cta-row">
+          <a class="btn-primary" data-primary-download href="https://github.com/guranshdeol/out-of-office-scheduler/releases/latest">
+            Download
+          </a>
+          <a class="link-arrow" href="#download">All platforms <span aria-hidden="true">→</span></a>
+        </div>
+        <p class="caption" data-primary-note>macOS · Windows · Linux</p>
+
+        <figure class="shot hero-shot">
+          <div class="frame">
+            <img
+              src="assets/screenshots/calendar.png"
+              alt="OOO Scheduler calendar showing one leave set in Outlook and two queued leaves"
+              width="1024"
+              height="690"
+            />
+          </div>
+          <div class="floor" aria-hidden="true"></div>
+        </figure>
+      </section>
+
+      <section class="row wrap" id="features">
+        <div class="row-text">
+          <p class="kicker mono">01 · Accounts</p>
+          <h2>Two mailboxes.<br />One click.</h2>
+          <p>
+            Contractors and consultants live in more than one tenant. Connect your employer's account and every client
+            account, then apply leave to all of them together. Pause a finished contract with one switch.
+          </p>
+          <ul class="ticks">
+            <li>Signs in through each company's own SSO: Okta, Microsoft Entra and others</li>
+            <li>One default message, with an optional custom message per account</li>
+            <li>Test connection shows exactly what each tenant allows</li>
+          </ul>
+        </div>
+        <figure class="shot row-shot">
+          <div class="frame">
+            <img src="assets/screenshots/accounts.png" alt="Two connected accounts, both passing the connection test" loading="lazy" width="1024" height="690" />
+          </div>
+        </figure>
+      </section>
+
+      <section class="row wrap reverse">
+        <div class="row-text">
+          <p class="kicker mono">02 · Calendar</p>
+          <h2>Separate weeks?<br />Queued for you.</h2>
+          <p>
+            Outlook can hold only one scheduled out-of-office period. Pick days across different weeks anyway: the first
+            stretch goes live right away, and the rest are applied automatically from the menu bar as each one ends.
+          </p>
+          <ul class="ticks">
+            <li>Weekends between leave days are joined automatically</li>
+            <li>12:00 AM to 12:00 AM by default, with optional custom times</li>
+            <li>An <em>Out of office</em> block on your calendar, kept for past leave</li>
+          </ul>
+        </div>
+        <figure class="shot row-shot">
+          <div class="frame">
+            <img src="assets/screenshots/calendar.png" alt="Calendar with leave periods colour-coded as set in Outlook or queued" loading="lazy" width="1024" height="690" />
+          </div>
+        </figure>
+      </section>
+
+      <section class="row wrap">
+        <div class="row-text">
+          <p class="kicker mono">03 · Message</p>
+          <h2>Write it once.</h2>
+          <p>
+            One reply for everyone inside and outside your company, saved in the app and reused every time. Change it
+            later, and any leave already set in Outlook is updated too.
+          </p>
+          <ul class="ticks">
+            <li>Plain text in, clean Outlook formatting out</li>
+            <li>Choose the title of the calendar block</li>
+            <li>Starts at login and stays quietly in the menu bar</li>
+          </ul>
+        </div>
+        <figure class="shot row-shot">
+          <div class="frame">
+            <img src="assets/screenshots/message.png" alt="Message and settings screen" loading="lazy" width="1024" height="690" />
+          </div>
+        </figure>
+      </section>
+
+      <section class="how wrap" id="how">
+        <p class="kicker mono">How it works</p>
+        <h2>Built for locked-down tenants.</h2>
+        <p class="lede narrow">
+          Many companies block third-party Microsoft Graph apps. OOO Scheduler uses the supported Exchange Online
+          PowerShell route instead, which only changes your own mailbox's automatic replies.
+        </p>
+        <ol class="steps">
+          <li>
+            <span class="num mono">1</span>
+            <div>
+              <h3>Sign in once per account</h3>
+              <p>Your browser opens that company's normal login. The session is stored encrypted in your OS keychain.</p>
+            </div>
+          </li>
+          <li>
+            <span class="num mono">2</span>
+            <div>
+              <h3>Pick days, press Apply</h3>
+              <p>Days are grouped into periods. The first is set on every account at once; the rest wait in a queue.</p>
+            </div>
+          </li>
+          <li>
+            <span class="num mono">3</span>
+            <div>
+              <h3>It handles the rest</h3>
+              <p>When a period ends, the next one is applied from the menu bar, and you get a notification if anything needs you.</p>
+            </div>
+          </li>
+        </ol>
+        <div class="chips" aria-label="Highlights">
+          <span class="chip"><span class="chip-dot green"></span>No server</span>
+          <span class="chip"><span class="chip-dot green"></span>No admin rights</span>
+          <span class="chip"><span class="chip-dot violet"></span>Tokens in OS keychain</span>
+          <span class="chip"><span class="chip-dot violet"></span>MIT licensed</span>
+        </div>
+      </section>
+
+      <section class="download wrap" id="download">
+        <div class="download-head">
+          <div>
+            <p class="kicker mono">Download</p>
+            <h2>Get OOO Scheduler.</h2>
+            <p class="muted" data-release-meta>Latest release on GitHub</p>
+          </div>
+          <a class="btn-primary" data-primary-download href="https://github.com/guranshdeol/out-of-office-scheduler/releases/latest">Download</a>
+        </div>
+        <div class="downloads" data-downloads>
+          <div class="dl-group">
+            <h3>macOS</h3>
+            <a class="dl" href="https://github.com/guranshdeol/out-of-office-scheduler/releases/latest">Apple Silicon &amp; Intel<span class="mono">.dmg</span></a>
+          </div>
+          <div class="dl-group">
+            <h3>Windows</h3>
+            <a class="dl" href="https://github.com/guranshdeol/out-of-office-scheduler/releases/latest">x64 &amp; ARM64<span class="mono">.exe</span></a>
+          </div>
+          <div class="dl-group">
+            <h3>Linux</h3>
+            <a class="dl" href="https://github.com/guranshdeol/out-of-office-scheduler/releases/latest">AppImage &amp; deb<span class="mono">x86_64 · arm64</span></a>
+          </div>
+        </div>
+        <p class="caption">
+          Builds aren't code-signed yet. On macOS, right-click the app and choose <em>Open</em> the first time; on Windows,
+          choose <em>More info → Run anyway</em>.
+        </p>
+      </section>
+
+      <section class="faq wrap" id="faq">
+        <p class="kicker mono">FAQ</p>
+        <h2>Questions.</h2>
+        <div class="faq-list">
+          <details>
+            <summary>Which accounts does it work with?</summary>
+            <p>
+              Microsoft 365 work and school mailboxes on Exchange Online. Gmail and on-premises Exchange aren't
+              supported. Each company decides whether Exchange Online PowerShell is allowed; <em>Test connection</em>
+              tells you straight away.
+            </p>
+          </details>
+          <details>
+            <summary>Does my data go anywhere?</summary>
+            <p>
+              No. The app talks directly to Microsoft from your computer. There's no server, account or analytics.
+              Sign-in tokens are encrypted by your operating system: Keychain, DPAPI or libsecret.
+            </p>
+          </details>
+          <details>
+            <summary>Why does macOS ask about "OOO Scheduler Safe Storage"?</summary>
+            <p>
+              After an update, macOS checks that the new version may read the encrypted sign-ins. Click
+              <em>Always Allow</em>. Unsigned builds get a new signature each version, so the prompt can come back after
+              updates.
+            </p>
+          </details>
+          <details>
+            <summary>What happens if I cancel leave?</summary>
+            <p>
+              The auto-reply is turned off. If another leave is queued, it's applied straight away. Exchange PowerShell
+              can't delete calendar items, so if a calendar block is left over, the app gives you a one-click link to
+              remove it in Outlook.
+            </p>
+          </details>
+          <details>
+            <summary>Does my computer need to be on?</summary>
+            <p>
+              Only between separate stretches of leave. Outlook holds one scheduled period, so the app applies the next
+              one when the previous ends, as long as it is running at some point in between.
+            </p>
+          </details>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="wrap footer-inner">
+        <div class="brand small">
+          <img src="assets/icon.png" alt="" width="18" height="18" />
+          <span>OOO Scheduler</span>
+        </div>
+        <p class="muted">
+          MIT © 2026 Guransh Deol · Icon from <a href="https://lucide.dev">Lucide</a> ·
+          <a href="https://github.com/guranshdeol/out-of-office-scheduler">Source on GitHub</a>
+        </p>
+      </div>
+    </footer>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>

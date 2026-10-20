@@ -11,7 +11,7 @@
 ![Platforms](https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-[Download](https://github.com/guranshdeol/out-of-office-scheduler/releases/latest) · [How it works](#how-it-works) · [Installing](#installing) · [Development](#development)
+[Website](https://guranshdeol.github.io/out-of-office-scheduler/) · [Download](https://github.com/guranshdeol/out-of-office-scheduler/releases/latest) · [How it works](#how-it-works) · [Installing](#installing) · [Development](#development)
 
 <img src="docs/screenshots/calendar.png" alt="Calendar with leave set in Outlook and queued leave" width="820">
 
