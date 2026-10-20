@@ -212,7 +212,8 @@
             <summary>Does my data go anywhere?</summary>
             <p>
               No. The app talks directly to Microsoft from your computer. There's no server, account or analytics.
-              Sign-in tokens are encrypted by your operating system: Keychain, DPAPI or libsecret.
+              Sign-in tokens are encrypted by your operating system: Keychain, DPAPI or libsecret. This website counts
+              anonymous page views with Cloudflare Web Analytics, without cookies; the app itself collects nothing.
             </p>
           </details>
           <details>
@@ -256,5 +257,6 @@
     </footer>
 
     <script src="app.js" defer></script>
+    <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "999accf223974dfba82a43eff1ad1161"}'></script>
   </body>
 </html>
