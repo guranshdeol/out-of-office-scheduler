@@ -72,6 +72,7 @@ function AccountCard({ account, status, ready, state }: { account: Account; stat
   const overrideBox = useRef<HTMLTextAreaElement>(null)
   const [label, tone] = AUTH_LABEL[status.auth]
   const test = status.test
+  const outlook = status.outlook
 
   const run = async (fn: () => Promise<unknown>): Promise<void> => {
     setError(undefined)
@@ -116,14 +117,16 @@ function AccountCard({ account, status, ready, state }: { account: Account; stat
         <div className={test.ok ? 'test ok' : 'test bad'}>
           <strong>{test.ok ? 'Test passed' : 'Test failed'}</strong> · {timeAgo(test.at)}
           {test.error && <div>{test.error}</div>}
-          {test.snapshot && (
-            <div className="muted">
-              Outlook right now: {test.snapshot.state}
-              {test.snapshot.state !== 'Disabled' &&
-                ` (${formatExchangeTime(test.snapshot.start?.iso)} → ${formatExchangeTime(test.snapshot.end?.iso)})`}
-            </div>
-          )}
         </div>
+      )}
+
+      {outlook && (
+        <p className="hint">
+          In Outlook: {outlook.snapshot.state}
+          {outlook.snapshot.state !== 'Disabled' &&
+            ` (${formatExchangeTime(outlook.snapshot.start?.iso)} → ${formatExchangeTime(outlook.snapshot.end?.iso)})`}
+          {' · '}checked {timeAgo(outlook.at)}
+        </p>
       )}
 
       <div className="row actions">

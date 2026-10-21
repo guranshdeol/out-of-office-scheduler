@@ -111,13 +111,14 @@ export interface AccountTest {
   error?: string
   canSet?: boolean
   canCreateEvent?: boolean
-  snapshot?: OooSnapshot
 }
 
 export interface AccountStatus {
   auth: AuthStatus
   authError?: string
   test?: AccountTest
+  /** The schedule Exchange last reported for this mailbox, from a test, an apply or turning it off. */
+  outlook?: { snapshot: OooSnapshot; at: number }
   busy?: string
 }
 

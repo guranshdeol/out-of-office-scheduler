@@ -74,7 +74,7 @@ async function applyToAccount(s: Stretch, account: Account): Promise<ApplyResult
       createEvent: settings.createCalendarEvent,
       subject: settings.calendarSubject || 'Out of office'
     })
-    setAccountStatus(account.id, { auth: 'connected', authError: undefined })
+    setAccountStatus(account.id, { auth: 'connected', authError: undefined, outlook: { snapshot: readBack, at: Date.now() } })
     return {
       status: 'ok',
       at: Date.now(),
