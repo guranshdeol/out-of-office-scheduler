@@ -80,7 +80,7 @@ jobs:
             | Windows | `OOO Scheduler-*-win-x64-setup.exe` (or `arm64`) |
             | Linux | `.AppImage` or `.deb` for `x86_64` / `arm64` |
 
-            Builds are not code-signed yet. See [Installing](https://github.com/${{ github.repository }}#installing) for the one-time macOS and Windows prompts.
+            Builds are not code-signed yet, so the first launch needs one extra step. macOS: see [Opening it on macOS](https://github.com/${{ github.repository }}#opening-it-on-macos). Windows: if SmartScreen appears, click **More info → Run anyway**.
 
             **Verify a download:** compare it with `SHA256SUMS.txt`, or check where it was built with
             `gh attestation verify <file> --repo ${{ github.repository }}`.

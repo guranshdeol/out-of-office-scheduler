@@ -191,8 +191,9 @@
           </div>
         </div>
         <p class="caption">
-          Builds aren't code-signed yet. On macOS, right-click the app and choose <em>Open</em> the first time; on Windows,
-          choose <em>More info → Run anyway</em>.
+          Builds aren't code-signed yet, so the first launch needs one extra step. On macOS, see
+          <a href="https://github.com/guranshdeol/out-of-office-scheduler#opening-it-on-macos">how to open it</a>; on
+          Windows, choose <em>More info → Run anyway</em>.
         </p>
       </section>
 
@@ -214,6 +215,16 @@
               No. The app talks directly to Microsoft from your computer. There's no server, account or analytics.
               Sign-in tokens are encrypted by your operating system: Keychain, DPAPI or libsecret. This website counts
               anonymous page views with Cloudflare Web Analytics, without cookies; the app itself collects nothing.
+            </p>
+          </details>
+          <details>
+            <summary>macOS says it could not verify the app. What do I do?</summary>
+            <p>
+              The builds aren't signed with an Apple Developer ID yet. Click <em>Done</em>, then open
+              <em>System Settings → Privacy &amp; Security</em> and click <em>Open Anyway</em> (this needs an administrator
+              password). Without administrator rights, first check the download against the release's
+              <span class="mono">SHA256SUMS.txt</span>, then allow it with one Terminal command; the
+              <a href="https://github.com/guranshdeol/out-of-office-scheduler#opening-it-on-macos">README</a> has the steps.
             </p>
           </details>
           <details>

@@ -79,10 +79,40 @@ Download the file for your platform from the [latest release](https://github.com
 
 | Platform | File | First launch |
 |---|---|---|
-| macOS (Apple Silicon) | `…-mac-arm64.dmg` | Drag the app to Applications, then **right-click → Open** the first time (the build isn't notarized). |
+| macOS (Apple Silicon) | `…-mac-arm64.dmg` | Drag the app to Applications, then see [Opening it on macOS](#opening-it-on-macos). |
 | macOS (Intel) | `…-mac-x64.dmg` | Same as above. |
 | Windows | `…-win-x64-setup.exe` | If SmartScreen appears, click **More info → Run anyway**. |
 | Linux | `.AppImage` or `.deb` | Needs a keyring (GNOME Keyring or KWallet) so sign-ins can be stored securely. |
+
+### Opening it on macOS
+
+The builds aren't signed with an Apple Developer ID yet, so the first time you open the app, macOS says it *could not verify "OOO Scheduler.app"*. Click **Done** (not *Move to Trash*), then use one of these:
+
+**Option 1: Open Anyway (needs an administrator password)**
+
+1. Open **System Settings → Privacy & Security** and scroll down to the message about *OOO Scheduler.app*.
+2. Click **Open Anyway**, enter an administrator name and password, then click **Open**.
+
+**Option 2: without administrator rights, verify the download, then allow it**
+
+1. From the same release, also download **`SHA256SUMS.txt`** into the folder with the `.dmg` (usually Downloads).
+2. In Terminal, check the download (use `mac-x64.dmg` instead on an Intel Mac):
+
+   ```bash
+   cd ~/Downloads
+   grep "mac-arm64.dmg" SHA256SUMS.txt | shasum -a 256 -c
+   ```
+
+   Continue only if it prints `…mac-arm64.dmg: OK`. If it says `FAILED` or can't find the file, delete the download and download it again from the release page. For a stronger check that the file was built by this repository's release workflow, you can also run `gh attestation verify <file>.dmg --repo guranshdeol/out-of-office-scheduler` with the [GitHub CLI](https://cli.github.com).
+3. Drag the app to Applications, then remove macOS's download flag from it:
+
+   ```bash
+   xattr -d com.apple.quarantine "/Applications/OOO Scheduler.app"
+   ```
+
+4. Open the app as usual.
+
+Only do this for a download that passed the check. On a company-managed Mac, follow your IT team's policy for installing apps.
 
 **About the Keychain prompt on macOS:** after an update, macOS may ask for permission to use *"OOO Scheduler Safe Storage"*. Click **Always Allow**. This happens because the builds aren't code-signed yet, so each version has a new signature.
 
