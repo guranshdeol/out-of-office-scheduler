@@ -113,11 +113,9 @@ Skip this if your Mac account is an administrator.
 
 **d. Keychain prompt.** If macOS asks to use *"OOO Scheduler Safe Storage"*, click **Always Allow**. It can come back after updates, because unsigned builds get a new signature each version.
 
-> [!TIP]
-> For an extra check that the file was built by this repository's release workflow, run `gh attestation verify <file>.dmg --repo guranshdeol/out-of-office-scheduler` with the [GitHub CLI](https://cli.github.com).
+⚠️ **Only remove the download flag from a file that passed the check.** On a company-managed Mac, follow your IT team's policy for installing apps.
 
-> [!IMPORTANT]
-> Only remove the download flag from a file that passed the check. On a company-managed Mac, follow your IT team's policy for installing apps.
+💡 **Extra check (optional):** to confirm the file was built by this repository's release workflow, run `gh attestation verify <file>.dmg --repo guranshdeol/out-of-office-scheduler` with the [GitHub CLI](https://cli.github.com).
 
 </details>
 
