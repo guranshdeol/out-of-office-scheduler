@@ -55,7 +55,12 @@ jobs:
           path: installers
           merge-multiple: true
       - name: Write checksums
-        run: cd installers && sha256sum * > SHA256SUMS.txt
+        # GitHub replaces spaces in uploaded file names with dots, so rename first
+        # to keep the names in SHA256SUMS.txt identical to the release's files.
+        run: |
+          cd installers
+          for f in *\ *; do [ -e "$f" ] && mv -- "$f" "${f// /.}"; done
+          sha256sum * > SHA256SUMS.txt
       - name: Attest build provenance
         uses: actions/attest-build-provenance@v2
         with:
