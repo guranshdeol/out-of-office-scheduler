@@ -36,7 +36,10 @@ export interface ApplyResult {
   readBack?: OooSnapshot
   /** Exchange reported times that differ from what was requested. */
   timeMismatch?: boolean
-  /** The apply asked Exchange to create the out-of-office calendar block. */
+  /**
+   * The apply asked Exchange to create the out-of-office calendar block. Taken from the setting,
+   * not the read-back: Exchange reports CreateOOFEvent as false even after creating the block.
+   */
   eventCreated?: boolean
   /** The auto-reply was turned off first so Exchange kept the previous, finished leave's block. */
   keptPrevious?: boolean
@@ -96,7 +99,7 @@ export interface OooSnapshot {
   state: string
   start?: OooTime | null
   end?: OooTime | null
-  createOofEvent?: boolean
+  // No createOofEvent: Exchange reads it back as false even after creating the block (see _common.ps1).
   externalAudience?: string
 }
 
