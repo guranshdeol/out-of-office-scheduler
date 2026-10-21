@@ -21,6 +21,7 @@ import { ensureRuntime } from './runtime'
 import { refreshAuthStatuses, requestCheck, startScheduler } from './scheduler'
 import { getConfig, initState, setRuntime, snapshot, subscribe } from './state'
 import { createTray } from './tray'
+import { checkForUpdates, startUpdateChecks } from './updates'
 
 let win: BrowserWindow | undefined
 let quitting = false
@@ -94,6 +95,7 @@ function registerIpc(): void {
   ipcMain.handle('ooo:cancelStretch', wrap((id: string) => cancelStretch(id)))
   ipcMain.handle('ooo:dismissCleanup', wrap((id: string) => dismissCleanup(id)))
   ipcMain.handle('ooo:runCheckNow', () => requestCheck('user'))
+  ipcMain.handle('ooo:checkForUpdates', () => checkForUpdates('user'))
   subscribe((state) => {
     if (win && !win.isDestroyed()) win.webContents.send('ooo:state', state)
   })
@@ -129,6 +131,7 @@ if (!app.requestSingleInstanceLock()) {
     applyLoginItem(getConfig().settings.launchAtLogin)
     createTray(show, snapshot())
     startScheduler(show)
+    startUpdateChecks()
     if (startHidden) {
       if (process.platform === 'darwin') app.dock?.hide()
     } else {

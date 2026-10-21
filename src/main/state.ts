@@ -1,4 +1,5 @@
-import type { AccountStatus, AppConfig, AppState, RuntimeStatus, StretchState } from '@shared/types'
+import { app } from 'electron'
+import type { AccountStatus, AppConfig, AppState, RuntimeStatus, StretchState, UpdateStatus } from '@shared/types'
 import { currentStretch, deriveState } from './periods'
 import { loadConfig, saveConfig } from './store'
 
@@ -8,6 +9,7 @@ let runtime: RuntimeStatus = { phase: 'checking', message: 'Starting…' }
 const applying = new Set<string>()
 let schedulerBusy = false
 let lastCheckAt: number | undefined
+let update: UpdateStatus = { checking: false }
 const listeners = new Set<(state: AppState) => void>()
 
 export function initState(): void {
@@ -16,6 +18,7 @@ export function initState(): void {
 
 export const getConfig = (): AppConfig => config
 export const getRuntime = (): RuntimeStatus => runtime
+export const getUpdateStatus = (): UpdateStatus => update
 export const getAccountStatus = (id: string): AccountStatus => accountStatus[id] ?? { auth: 'unknown' }
 
 export function snapshot(): AppState {
@@ -37,7 +40,9 @@ export function snapshot(): AppState {
     runtime,
     schedulerBusy,
     lastCheckAt,
-    platform: process.platform
+    platform: process.platform,
+    version: app.getVersion(),
+    update
   }
 }
 
@@ -76,5 +81,10 @@ export function setApplying(stretchId: string, on: boolean): void {
 export function setSchedulerBusy(busy: boolean, checkedAt?: number): void {
   schedulerBusy = busy
   if (checkedAt) lastCheckAt = checkedAt
+  notify()
+}
+
+export function setUpdateStatus(patch: Partial<UpdateStatus>): void {
+  update = { ...update, ...patch }
   notify()
 }

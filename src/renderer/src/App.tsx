@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 import type { AppState } from '@shared/types'
+import { AppIcon } from './AppIcon'
 import { AccountsView } from './views/AccountsView'
 import { CalendarView } from './views/CalendarView'
 import { MessageView } from './views/MessageView'
 import { SetupBanner } from './views/SetupBanner'
+import { UpdateBanner } from './views/UpdateBanner'
 
 type View = 'calendar' | 'accounts' | 'message'
 
@@ -38,9 +40,7 @@ export function App(): React.JSX.Element {
     <div className="app">
       <header className="topbar">
         <div className="brand">
-          <span className="logo" aria-hidden>
-            ◷
-          </span>
+          <AppIcon />
           OOO Scheduler
         </div>
         <nav className="tabs">
@@ -53,6 +53,7 @@ export function App(): React.JSX.Element {
         </nav>
       </header>
       <SetupBanner runtime={state.runtime} />
+      <UpdateBanner state={state} />
       <main className="content">
         {view === 'calendar' && <CalendarView state={state} goToAccounts={() => setView('accounts')} />}
         {view === 'accounts' && <AccountsView state={state} />}

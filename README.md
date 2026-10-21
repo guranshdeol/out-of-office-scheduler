@@ -42,6 +42,8 @@ OOO Scheduler does it from one place. Click the days you'll be away, press **App
 - **Calendar blocks.** The app adds an *Out of office* event to your calendar for each stretch. Past leave keeps its block.
 - **Custom times when you need them.** By default leave runs from 12:00 AM to 12:00 AM local time. You can switch to custom start and end times, for example 12 PM to 12 PM.
 - **One message, with exceptions.** Write one reply for everyone, or give a client its own text, for example with a different backup contact.
+- **Dates filled in for you.** Write `{start}` and `{end}` in your message, and each leave fills in its own first and last day, for example *"I'm on leave until Friday, 24 October."*
+- **Update check.** Once a day the app checks GitHub for a newer release and shows a link to download it. You can switch this off.
 - **No admin rights.** On first run the app downloads PowerShell 7 and the Exchange Online module into its own folder.
 
 <table>
@@ -97,6 +99,24 @@ Download the file for your platform from the [latest release](https://github.com
 - **Your company still decides.** A tenant can block Exchange Online PowerShell for regular users or force frequent sign-in. **Test connection** shows whether an account works.
 - **One period at a time.** Outlook stores one scheduled out-of-office period per mailbox. Later stretches go live once the earlier one ends, so the app needs to be running, in the menu bar, at some point in between.
 - **Cancelled leave.** Exchange PowerShell can't delete calendar items. If you cancel leave that's already set and nothing else is queued, the app turns the reply off and gives you a one-click link to delete the block in Outlook.
+
+## For IT and security teams
+
+OOO Scheduler is open source, so everything below can be checked in the code.
+
+- **What it changes.** Only the signed-in user's own automatic replies and the matching *Out of office* calendar block. Each session loads just two cmdlets: `Get-MailboxAutoReplyConfiguration` and `Set-MailboxAutoReplyConfiguration` (with `-CreateOOFEvent` for the calendar block).
+- **Permissions.** The user signs in through Microsoft's own Exchange Online PowerShell public client (`fb78d390-0c51-40cd-8e17-fdbfab77341b`) in the system browser, with the company's usual SSO and MFA. There's no app registration and no admin consent. The app acts with the user's own Exchange Online rights. A tenant that blocks Exchange Online PowerShell for users also blocks the app.
+- **What's stored.** In the app's data folder (`~/Library/Application Support/OOO Scheduler`, `%APPDATA%\OOO Scheduler` or `~/.config/OOO Scheduler`):
+  - the MSAL token cache, encrypted with the OS (Keychain on macOS, DPAPI on Windows, libsecret on Linux) and readable only by the user;
+  - a settings file with account addresses, nicknames, the message and leave dates.
+
+  Removing an account deletes its saved sign-in. Sessions follow the tenant's sign-in policies and can be revoked like any other Microsoft 365 session.
+- **Network.** `github.com` and its download CDN (first-run PowerShell 7 download), `api.github.com` (daily check for a newer release, which users can switch off), the PowerShell Gallery (`ExchangeOnlineManagement` module), `login.microsoftonline.com` (sign-in) and `outlook.office365.com` (Exchange Online). No other servers, and no telemetry.
+- **Processes.** The app runs its bundled scripts in a separate `pwsh` process; on Windows it starts it with `-ExecutionPolicy Bypass` so those scripts can run. The access token is passed over stdin, never on the command line.
+- **Builds.** Release builds are made by GitHub Actions from this repository. Each release includes `SHA256SUMS.txt` and a GitHub build attestation, so a download can be checked with `gh attestation verify <file> --repo guranshdeol/out-of-office-scheduler`. The builds aren't code-signed yet, so macOS and Windows show a warning the first time.
+- **Updates.** The app never downloads or installs updates by itself. It only tells the user that a newer release exists.
+
+**For users:** connect your normal work mailboxes only, never an administrator account. Before connecting a company's or client's mailbox, check that their policies allow it.
 
 ## Development
 

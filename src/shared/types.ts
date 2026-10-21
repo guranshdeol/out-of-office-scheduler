@@ -21,6 +21,8 @@ export interface Settings {
   launchAtLogin: boolean
   calendarSubject: string
   createCalendarEvent: boolean
+  /** Look for a newer release on GitHub once a day. */
+  checkForUpdates: boolean
 }
 
 export type ApplyStatus = 'ok' | 'failed'
@@ -81,6 +83,8 @@ export interface AppConfig {
   settings: Settings
   stretches: Stretch[]
   calendarCleanups: CalendarCleanup[]
+  /** The newest version the user has already been notified about. */
+  updateNotifiedVersion?: string
 }
 
 export interface OooTime {
@@ -124,6 +128,14 @@ export interface RuntimeStatus {
   moduleVersion?: string
 }
 
+export interface UpdateStatus {
+  checking: boolean
+  /** A newer release than the running version, if one was found. */
+  latest?: { version: string; url: string }
+  checkedAt?: number
+  error?: string
+}
+
 export interface AppState {
   config: AppConfig
   accountStatus: Record<string, AccountStatus>
@@ -132,6 +144,9 @@ export interface AppState {
   schedulerBusy: boolean
   lastCheckAt?: number
   platform: string
+  /** The running app version. */
+  version: string
+  update: UpdateStatus
 }
 
 export interface NewAccountInput {
@@ -171,4 +186,5 @@ export interface OooApi {
   cancelStretch(id: string): Promise<{ ok: boolean; error?: string }>
   dismissCleanup(id: string): Promise<void>
   runCheckNow(): Promise<void>
+  checkForUpdates(): Promise<void>
 }
