@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import type { AppState } from '@shared/types'
+import type { Drafts, SetDraft } from '../drafts'
 import { errorText, timeAgo } from '../util'
 import { MessagePreview, PlaceholderButtons } from './Placeholders'
 
-export function MessageView({ state }: { state: AppState }): React.JSX.Element {
+export function MessageView({ state, drafts, setDraft }: { state: AppState; drafts: Drafts; setDraft: SetDraft }): React.JSX.Element {
   const { config, runtime } = state
-  const [message, setMessage] = useState(config.message)
+  const message = drafts.message ?? config.message
+  const setMessage = (value: string): void => setDraft('message', value, config.message)
   const [subject, setSubject] = useState(config.settings.calendarSubject)
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState<string>()
@@ -17,6 +19,7 @@ export function MessageView({ state }: { state: AppState }): React.JSX.Element {
     setError(undefined)
     try {
       await window.ooo.saveMessage(message)
+      setDraft('message', message, message)
       setSaved(true)
       setTimeout(() => setSaved(false), 2000)
     } catch (err) {
@@ -41,6 +44,7 @@ export function MessageView({ state }: { state: AppState }): React.JSX.Element {
             Save message
           </button>
           {saved && <span className="ok-text">Saved. Any leave already set in Outlook is updated.</span>}
+          {message !== config.message && <span className="muted">Not saved yet</span>}
         </div>
         {error && <p className="error-text">{error}</p>}
       </div>

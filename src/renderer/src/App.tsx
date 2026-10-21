@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { AppState } from '@shared/types'
 import { AppIcon } from './AppIcon'
+import { type Drafts, type SetDraft, withDraft } from './drafts'
 import { AccountsView } from './views/AccountsView'
 import { CalendarView } from './views/CalendarView'
 import { MessageView } from './views/MessageView'
@@ -18,6 +19,8 @@ const TABS: { id: View; label: string }[] = [
 export function App(): React.JSX.Element {
   const [state, setState] = useState<AppState>()
   const [view, setView] = useState<View>('calendar')
+  const [drafts, setDrafts] = useState<Drafts>({})
+  const setDraft: SetDraft = (key, value, saved) => setDrafts((d) => withDraft(d, key, value, saved))
 
   useEffect(() => {
     void window.ooo.getState().then((s) => {
@@ -56,8 +59,8 @@ export function App(): React.JSX.Element {
       <UpdateBanner state={state} />
       <main className="content">
         {view === 'calendar' && <CalendarView state={state} goToAccounts={() => setView('accounts')} />}
-        {view === 'accounts' && <AccountsView state={state} />}
-        {view === 'message' && <MessageView state={state} />}
+        {view === 'accounts' && <AccountsView state={state} drafts={drafts} setDraft={setDraft} />}
+        {view === 'message' && <MessageView state={state} drafts={drafts} setDraft={setDraft} />}
       </main>
     </div>
   )

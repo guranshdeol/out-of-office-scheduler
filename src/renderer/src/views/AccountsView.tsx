@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import type { Account, AccountStatus, AppState } from '@shared/types'
+import type { Drafts, SetDraft } from '../drafts'
 import { errorText, formatExchangeTime, timeAgo } from '../util'
 import { MessagePreview, PlaceholderButtons } from './Placeholders'
 
@@ -64,10 +65,21 @@ function AddAccount(): React.JSX.Element {
   )
 }
 
-function AccountCard({ account, status, ready, state }: { account: Account; status: AccountStatus; ready: boolean; state: AppState }): React.JSX.Element {
+function AccountCard(props: {
+  account: Account
+  status: AccountStatus
+  ready: boolean
+  state: AppState
+  drafts: Drafts
+  setDraft: SetDraft
+}): React.JSX.Element {
+  const { account, status, ready, state, drafts, setDraft } = props
+  const draftKey = `override:${account.id}`
+  const savedOverride = account.messageOverride ?? ''
   const [error, setError] = useState<string>()
-  const [editingMessage, setEditingMessage] = useState(false)
-  const [override, setOverride] = useState(account.messageOverride ?? '')
+  const [editingMessage, setEditingMessage] = useState(draftKey in drafts)
+  const override = drafts[draftKey] ?? savedOverride
+  const setOverride = (value: string): void => setDraft(draftKey, value, savedOverride)
   const [nickname, setNickname] = useState(account.nickname)
   const overrideBox = useRef<HTMLTextAreaElement>(null)
   const [label, tone] = AUTH_LABEL[status.auth]
@@ -138,6 +150,7 @@ function AccountCard({ account, status, ready, state }: { account: Account; stat
         </button>
         <button className="btn small" onClick={() => setEditingMessage((v) => !v)}>
           {account.messageOverride ? 'Custom message ✓' : 'Custom message'}
+          {draftKey in drafts && ' (not saved)'}
         </button>
         <span className="spacer" />
         <button
@@ -164,6 +177,7 @@ function AccountCard({ account, status, ready, state }: { account: Account; stat
               onClick={() =>
                 void run(async () => {
                   await window.ooo.updateAccount(account.id, { messageOverride: override })
+                  setDraft(draftKey, override, override)
                   setEditingMessage(false)
                 })
               }
@@ -179,7 +193,7 @@ function AccountCard({ account, status, ready, state }: { account: Account; stat
   )
 }
 
-export function AccountsView({ state }: { state: AppState }): React.JSX.Element {
+export function AccountsView({ state, drafts, setDraft }: { state: AppState; drafts: Drafts; setDraft: SetDraft }): React.JSX.Element {
   const ready = state.runtime.phase === 'ready'
   return (
     <div className="accounts">
@@ -188,7 +202,15 @@ export function AccountsView({ state }: { state: AppState }): React.JSX.Element 
         <p className="empty">No accounts yet. Connect your employer account and each customer account you work for.</p>
       ) : (
         state.config.accounts.map((a) => (
-          <AccountCard key={a.id} account={a} status={state.accountStatus[a.id] ?? { auth: 'unknown' }} ready={ready} state={state} />
+          <AccountCard
+            key={a.id}
+            account={a}
+            status={state.accountStatus[a.id] ?? { auth: 'unknown' }}
+            ready={ready}
+            state={state}
+            drafts={drafts}
+            setDraft={setDraft}
+          />
         ))
       )}
     </div>
