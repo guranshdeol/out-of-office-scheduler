@@ -253,6 +253,7 @@ async function turnOff(a: Account): Promise<string | undefined> {
  * Removes a leave period. If it is set in Outlook and another leave is queued, the next leave is
  * applied straight away, which makes Exchange replace the old calendar block. Otherwise the
  * auto-reply is turned off and the user is reminded to delete the leftover block in Outlook.
+ * The account's oofBlock is left pointing at the cancelled block on purpose; see Account.oofBlock.
  */
 export async function cancelStretch(id: string): Promise<Outcome> {
   const config = getConfig()

@@ -36,7 +36,7 @@ vi.mock('../src/main/exo', () => ({ ExoError: class extends Error {}, ...exo }))
 
 const { initState, getConfig, getAccountStatus, setRuntime } = await import('../src/main/state')
 const { requestCheck } = await import('../src/main/scheduler')
-const { applyDays } = await import('../src/main/actions')
+const { applyDays, cancelStretch } = await import('../src/main/actions')
 
 const at = (day: string, time = '10:00'): Date => new Date(`${day}T${time}:00`)
 const leave = (...days: string[]): Promise<void> => applyDays({ days, customTimes: false, startTime: '09:00', endTime: '17:00' })
@@ -78,5 +78,41 @@ describe('applying leave', () => {
     })
     await requestCheck('user')
     expect(exo.setOoo).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('cancelling leave', () => {
+  const block = (startDay: string, endDay: string): { startMs: number; endMs: number } => ({
+    startMs: at(startDay, '00:00').getTime(),
+    endMs: at(endDay, '00:00').getTime()
+  })
+
+  async function cancelLiveLeave(): Promise<void> {
+    await leave('2026-11-02', '2026-11-03', '2026-11-04')
+    expect(await cancelStretch(getConfig().stretches[0].id)).toEqual({ ok: true })
+  }
+
+  it('turns the auto-reply off, asks for the block to be deleted and keeps tracking it', async () => {
+    await cancelLiveLeave()
+    expect(exo.clearOoo).toHaveBeenCalledTimes(1)
+    expect(getAccountStatus('a1').outlook?.snapshot.state).toBe('Disabled')
+    expect(getConfig().calendarCleanups).toMatchObject([{ accountId: 'a1', ...block('2026-11-02', '2026-11-05') }])
+    expect(getConfig().accounts[0].oofBlock).toMatchObject(block('2026-11-02', '2026-11-05'))
+  })
+
+  it('drops the cleanup when the next leave makes Exchange replace the unfinished block', async () => {
+    await cancelLiveLeave()
+    await leave('2026-11-16')
+    expect(getConfig().calendarCleanups).toEqual([])
+    expect(getConfig().accounts[0].oofBlock).toMatchObject(block('2026-11-16', '2026-11-17'))
+  })
+
+  it('keeps the cleanup when the cancelled block is already over, because Exchange keeps it', async () => {
+    await cancelLiveLeave()
+    vi.setSystemTime(at('2026-11-06'))
+    await leave('2026-11-16')
+    expect(exo.clearOoo).toHaveBeenCalledTimes(2)
+    expect(getConfig().calendarCleanups).toMatchObject([block('2026-11-02', '2026-11-05')])
+    expect(getConfig().accounts[0].oofBlock).toMatchObject(block('2026-11-16', '2026-11-17'))
   })
 })

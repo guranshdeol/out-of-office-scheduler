@@ -13,7 +13,11 @@ export interface Account {
   /** MSAL home account id, set after the first successful sign-in. */
   homeAccountId?: string
   tenantId?: string
-  /** The out-of-office calendar block Exchange is currently tracking for this mailbox. */
+  /**
+   * The out-of-office calendar block Exchange is currently tracking for this mailbox. Kept when that
+   * leave is cancelled: Exchange still tracks the block and deletes it when the next block is created
+   * (unless it is over by then), which is how the scheduler knows the matching cleanup has gone.
+   */
   oofBlock?: { stretchId: string; startMs: number; endMs: number }
 }
 
