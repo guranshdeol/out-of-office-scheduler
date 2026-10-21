@@ -1,5 +1,5 @@
-import { addDays, formatDay, stretchEndMs, stretchStartMs, todayKey } from '@shared/dates'
-import { fillPlaceholders, hasPlaceholders, PLACEHOLDERS } from '@shared/placeholders'
+import { addDays, stretchEndMs, stretchStartMs, todayKey } from '@shared/dates'
+import { fillPlaceholders, formatLeaveDate, hasPlaceholders, insertPlaceholder, PLACEHOLDERS } from '@shared/placeholders'
 import type { AppState, DateKey } from '@shared/types'
 
 /** Buttons that insert {start} / {end} at the cursor in a message box. */
@@ -12,10 +12,11 @@ export function PlaceholderButtons(props: {
     const el = props.textarea.current
     const start = el?.selectionStart ?? props.value.length
     const end = el?.selectionEnd ?? props.value.length
-    props.onChange(props.value.slice(0, start) + token + props.value.slice(end))
+    const next = insertPlaceholder(props.value, start, end, token)
+    props.onChange(next.text)
     requestAnimationFrame(() => {
       el?.focus()
-      el?.setSelectionRange(start + token.length, start + token.length)
+      el?.setSelectionRange(next.cursor, next.cursor)
     })
   }
   return (
@@ -43,16 +44,28 @@ function previewLeave(state: AppState): { startDate: DateKey; endDate: DateKey; 
   return { startDate: monday, endDate: addDays(monday, 4), sample: true }
 }
 
-/** Shows how a message with placeholders will read for the next leave. */
-export function MessagePreview({ text, state }: { text: string; state: AppState }): React.JSX.Element | null {
+/**
+ * Shows how a message with placeholders will read: for the given leave, or else for the next
+ * leave (or an example week if none is scheduled).
+ */
+export function MessagePreview(props: {
+  text: string
+  state: AppState
+  leave?: { startDate: DateKey; endDate: DateKey }
+  title?: string
+}): React.JSX.Element | null {
+  const { text, state } = props
   if (!hasPlaceholders(text)) return null
-  const leave = previewLeave(state)
-  const range = `${formatDay(leave.startDate)} – ${formatDay(leave.endDate)}`
+  const leave = props.leave ? { ...props.leave, sample: false } : previewLeave(state)
+  const range =
+    leave.startDate === leave.endDate
+      ? formatLeaveDate(leave.startDate)
+      : `${formatLeaveDate(leave.startDate)} – ${formatLeaveDate(leave.endDate)}`
+  const title =
+    props.title ?? (leave.sample ? `Preview for an example week (${range})` : `Preview for your next leave (${range})`)
   return (
     <div className="message-preview">
-      <div className="muted small">
-        Preview for {leave.sample ? `an example week (${range})` : `your next leave (${range})`}
-      </div>
+      <div className="muted small">{title}</div>
       <div className="message-preview-text">{fillPlaceholders(text, leave)}</div>
     </div>
   )

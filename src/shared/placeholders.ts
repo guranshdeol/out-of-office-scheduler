@@ -30,3 +30,21 @@ export function fillPlaceholders(text: string, leave: { startDate: DateKey; endD
 
 /** True if the text uses any placeholder. */
 export const hasPlaceholders = (text: string): boolean => /\{(start|end)\}/i.test(text)
+
+/**
+ * Inserts a placeholder at a selection, adding a space on either side only where it would
+ * otherwise run into a word (so "and|may" becomes "and {end} may").
+ */
+export function insertPlaceholder(
+  text: string,
+  start: number,
+  end: number,
+  token: string
+): { text: string; cursor: number } {
+  const before = text.slice(0, start)
+  const after = text.slice(end)
+  const spaceBefore = before.length > 0 && !/[\s([{"'“‘]$/.test(before)
+  const spaceAfter = /^[\p{L}\p{N}]/u.test(after)
+  const inserted = (spaceBefore ? ' ' : '') + token + (spaceAfter ? ' ' : '')
+  return { text: before + inserted + after, cursor: before.length + inserted.length }
+}

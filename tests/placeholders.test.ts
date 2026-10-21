@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { fillPlaceholders, formatLeaveDate, hasPlaceholders } from '../src/shared/placeholders'
+import { fillPlaceholders, formatLeaveDate, hasPlaceholders, insertPlaceholder } from '../src/shared/placeholders'
 
 const now = new Date(2026, 9, 20)
 
@@ -33,5 +33,22 @@ describe('hasPlaceholders', () => {
   it('detects placeholders', () => {
     expect(hasPlaceholders('until {End}')).toBe(true)
     expect(hasPlaceholders('until Friday')).toBe(false)
+  })
+})
+
+describe('insertPlaceholder', () => {
+  it('adds spaces where the placeholder would touch a word', () => {
+    expect(insertPlaceholder('and may', 4, 4, '{end}')).toEqual({ text: 'and {end} may', cursor: 10 })
+    expect(insertPlaceholder('until.', 5, 5, '{end}')).toEqual({ text: 'until {end}.', cursor: 11 })
+  })
+
+  it('adds no extra spaces where there already are some', () => {
+    expect(insertPlaceholder('until  now', 6, 6, '{end}')).toEqual({ text: 'until {end} now', cursor: 11 })
+    expect(insertPlaceholder('', 0, 0, '{end}')).toEqual({ text: '{end}', cursor: 5 })
+    expect(insertPlaceholder('(', 1, 1, '{end}')).toEqual({ text: '({end}', cursor: 6 })
+  })
+
+  it('replaces a selection', () => {
+    expect(insertPlaceholder('until Friday.', 6, 12, '{end}')).toEqual({ text: 'until {end}.', cursor: 11 })
   })
 })

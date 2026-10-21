@@ -57,7 +57,11 @@ function buildMenu(state: AppState, show: (view?: string) => void): Menu {
     {
       label: state.update.checking ? 'Checking for updates…' : 'Check for updates',
       enabled: !state.update.checking,
-      click: () => void checkForUpdates('user')
+      click: () => {
+        // Show the result in the app too, in case notifications are turned off.
+        show('message')
+        void checkForUpdates('user')
+      }
     },
     { type: 'separator' },
     { label: 'Quit', click: () => app.quit() }
