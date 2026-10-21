@@ -25,7 +25,8 @@ const api: OooApi = {
   editStretch: (id, edit) => ipcRenderer.invoke('ooo:editStretch', id, edit),
   cancelStretch: (id) => ipcRenderer.invoke('ooo:cancelStretch', id),
   dismissCleanup: (id) => ipcRenderer.invoke('ooo:dismissCleanup', id),
-  runCheckNow: () => ipcRenderer.invoke('ooo:runCheckNow')
+  runCheckNow: () => ipcRenderer.invoke('ooo:runCheckNow'),
+  checkForUpdates: () => ipcRenderer.invoke('ooo:checkForUpdates')
 }
 
 contextBridge.exposeInMainWorld('ooo', api)

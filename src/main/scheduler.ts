@@ -1,5 +1,6 @@
 import { Notification, powerMonitor } from 'electron'
 import { formatDateTime, stretchEndMs, stretchStartMs } from '@shared/dates'
+import { fillPlaceholders } from '@shared/placeholders'
 import type { Account, ApplyResult, OooSnapshot, OooTime, Stretch } from '@shared/types'
 import { getToken, NeedsSignInError } from './auth'
 import { clearOoo, ExoError, setOoo } from './exo'
@@ -33,7 +34,9 @@ function notifyUser(title: string, body: string, view = 'calendar'): void {
   n.show()
 }
 
-export const messageFor = (account: Account): string => account.messageOverride?.trim() || getConfig().message
+/** The account's message for this leave, with {start} and {end} filled in from the leave's dates. */
+export const messageFor = (account: Account, s: Stretch): string =>
+  fillPlaceholders(account.messageOverride?.trim() || getConfig().message, s)
 
 function parseOooTime(t: OooTime | null | undefined): number | undefined {
   if (!t?.iso) return undefined
@@ -67,7 +70,7 @@ async function applyToAccount(s: Stretch, account: Account): Promise<ApplyResult
       token,
       startMs: stretchStartMs(s),
       endMs: stretchEndMs(s),
-      html: textToHtml(messageFor(account)),
+      html: textToHtml(messageFor(account, s)),
       createEvent: settings.createCalendarEvent,
       subject: settings.calendarSubject || 'Out of office'
     })

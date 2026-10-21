@@ -3,6 +3,7 @@ import { addDays, eachDay, formatDateTime, formatDay, fromKey, stretchEndMs, str
 import type { AppState, CalendarCleanup, DateKey, Stretch, StretchState } from '@shared/types'
 import { groupDays } from '../../../main/periods'
 import { errorText, formatExchangeTime } from '../util'
+import { MessagePreview } from './Placeholders'
 
 const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
@@ -433,6 +434,14 @@ export function CalendarView({ state, goToAccounts }: { state: AppState; goToAcc
                 setStartTime={setStartTime}
                 endTime={endTime}
                 setEndTime={setEndTime}
+              />
+              <MessagePreview
+                text={state.config.message}
+                state={state}
+                leave={preview[0]}
+                title={`Your auto-reply${preview.length > 1 ? ' for the first period' : ''}${
+                  enabledAccounts.some((a) => a.messageOverride?.trim()) ? ' (accounts with their own message use theirs)' : ''
+                }:`}
               />
               {preview.length > 1 && (
                 <p className="hint">

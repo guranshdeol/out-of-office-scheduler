@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { AppState } from '@shared/types'
 import { errorText, timeAgo } from '../util'
+import { MessagePreview, PlaceholderButtons } from './Placeholders'
 
 export function MessageView({ state }: { state: AppState }): React.JSX.Element {
   const { config, runtime } = state
@@ -8,6 +9,7 @@ export function MessageView({ state }: { state: AppState }): React.JSX.Element {
   const [subject, setSubject] = useState(config.settings.calendarSubject)
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState<string>()
+  const textarea = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => setSubject(config.settings.calendarSubject), [config.settings.calendarSubject])
 
@@ -28,9 +30,12 @@ export function MessageView({ state }: { state: AppState }): React.JSX.Element {
         <h3>Default out-of-office message</h3>
         <p className="hint">
           Sent to everyone who emails you, inside and outside your company, on every account that doesn't have its own
-          custom message. Leave a blank line between paragraphs.
+          custom message. Leave a blank line between paragraphs. {'{end}'} is replaced with the last day of each leave (and{' '}
+          {'{start}'} with the first) when the leave is applied.
         </p>
-        <textarea rows={10} value={message} onChange={(e) => setMessage(e.target.value)} />
+        <textarea ref={textarea} rows={10} value={message} onChange={(e) => setMessage(e.target.value)} />
+        <PlaceholderButtons textarea={textarea} value={message} onChange={setMessage} />
+        <MessagePreview text={message} state={state} />
         <div className="row">
           <button className="btn primary" onClick={() => void save()} disabled={message === config.message}>
             Save message
@@ -67,11 +72,42 @@ export function MessageView({ state }: { state: AppState }): React.JSX.Element {
           />
           <span>Start at login and keep running in the menu bar (needed to apply later leave automatically)</span>
         </label>
+        <label className="switch">
+          <input
+            type="checkbox"
+            checked={config.settings.checkForUpdates}
+            onChange={(e) => void window.ooo.saveSettings({ checkForUpdates: e.target.checked })}
+          />
+          <span>Check for updates once a day</span>
+        </label>
       </div>
 
       <div className="card">
         <h3>About this setup</h3>
         <dl className="facts">
+          <dt>Version</dt>
+          <dd>
+            {state.version}
+            {' · '}
+            {state.update.checking
+              ? 'Checking for updates…'
+              : state.update.latest
+                ? `version ${state.update.latest.version} is available`
+                : state.update.error
+                  ? `couldn't check for updates`
+                  : state.update.checkedAt
+                    ? `up to date (checked ${timeAgo(state.update.checkedAt)})`
+                    : 'not checked yet'}{' '}
+            {state.update.latest ? (
+              <a className="link" href={state.update.latest.url} target="_blank" rel="noreferrer">
+                Download
+              </a>
+            ) : (
+              <button className="link" disabled={state.update.checking} onClick={() => void window.ooo.checkForUpdates()}>
+                Check now
+              </button>
+            )}
+          </dd>
           <dt>PowerShell</dt>
           <dd>{runtime.pwshPath ?? runtime.message}</dd>
           <dt>Exchange Online module</dt>

@@ -1,9 +1,10 @@
-import { Menu, Tray, app, nativeImage, type NativeImage } from 'electron'
+import { Menu, Tray, app, nativeImage, shell, type NativeImage } from 'electron'
 import { join } from 'node:path'
 import { stretchEndMs, stretchStartMs } from '@shared/dates'
 import type { AppState } from '@shared/types'
 import { describeStretch, requestCheck } from './scheduler'
 import { subscribe } from './state'
+import { checkForUpdates } from './updates'
 
 const trayDir = (): string =>
   app.isPackaged ? join(process.resourcesPath, 'tray') : join(app.getAppPath(), 'resources', 'tray')
@@ -42,8 +43,26 @@ function buildMenu(state: AppState, show: (view?: string) => void): Menu {
       ? [{ label: `Reconnect: ${needsSignIn.map((a) => a.nickname).join(', ')}`, click: () => show('accounts') }]
       : []),
     { type: 'separator' },
+    ...(state.update.latest
+      ? [
+          {
+            label: `Download update ${state.update.latest.version}…`,
+            click: () => void shell.openExternal(state.update.latest!.url)
+          },
+          { type: 'separator' as const }
+        ]
+      : []),
     { label: 'Open OOO Scheduler', click: () => show() },
     { label: state.schedulerBusy ? 'Checking…' : 'Check now', enabled: !state.schedulerBusy, click: () => void requestCheck('user') },
+    {
+      label: state.update.checking ? 'Checking for updates…' : 'Check for updates',
+      enabled: !state.update.checking,
+      click: () => {
+        // Show the result in the app too, in case notifications are turned off.
+        show('message')
+        void checkForUpdates('user')
+      }
+    },
     { type: 'separator' },
     { label: 'Quit', click: () => app.quit() }
   ])

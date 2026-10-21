@@ -82,8 +82,7 @@ textarea {
 }
 
 .logo {
-  color: var(--primary);
-  font-size: 18px;
+  flex-shrink: 0;
 }
 
 .tabs {
@@ -678,6 +677,22 @@ a.btn {
 
 .facts dt {
   color: var(--muted);
+}
+
+.placeholders {
+  margin-top: 6px;
+}
+
+.message-preview {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+}
+
+.message-preview-text {
+  margin-top: 6px;
+  white-space: pre-wrap;
 }
 
 .facts dd {

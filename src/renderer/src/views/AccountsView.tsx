@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import type { Account, AccountStatus, AppState } from '@shared/types'
 import { errorText, formatExchangeTime, timeAgo } from '../util'
+import { MessagePreview, PlaceholderButtons } from './Placeholders'
 
 const AUTH_LABEL: Record<AccountStatus['auth'], [string, string]> = {
   connected: ['Connected', 'ok'],
@@ -63,11 +64,12 @@ function AddAccount(): React.JSX.Element {
   )
 }
 
-function AccountCard({ account, status, ready }: { account: Account; status: AccountStatus; ready: boolean }): React.JSX.Element {
+function AccountCard({ account, status, ready, state }: { account: Account; status: AccountStatus; ready: boolean; state: AppState }): React.JSX.Element {
   const [error, setError] = useState<string>()
   const [editingMessage, setEditingMessage] = useState(false)
   const [override, setOverride] = useState(account.messageOverride ?? '')
   const [nickname, setNickname] = useState(account.nickname)
+  const overrideBox = useRef<HTMLTextAreaElement>(null)
   const [label, tone] = AUTH_LABEL[status.auth]
   const test = status.test
 
@@ -150,7 +152,9 @@ function AccountCard({ account, status, ready }: { account: Account; status: Acc
       {editingMessage && (
         <div className="override">
           <p className="hint">Leave empty to use the default message. Use this for a different backup contact per customer, for example.</p>
-          <textarea rows={5} value={override} onChange={(e) => setOverride(e.target.value)} />
+          <textarea ref={overrideBox} rows={5} value={override} onChange={(e) => setOverride(e.target.value)} />
+          <PlaceholderButtons textarea={overrideBox} value={override} onChange={setOverride} />
+          <MessagePreview text={override} state={state} />
           <div className="row">
             <button
               className="btn small primary"
@@ -181,7 +185,7 @@ export function AccountsView({ state }: { state: AppState }): React.JSX.Element 
         <p className="empty">No accounts yet. Connect your employer account and each customer account you work for.</p>
       ) : (
         state.config.accounts.map((a) => (
-          <AccountCard key={a.id} account={a} status={state.accountStatus[a.id] ?? { auth: 'unknown' }} ready={ready} />
+          <AccountCard key={a.id} account={a} status={state.accountStatus[a.id] ?? { auth: 'unknown' }} ready={ready} state={state} />
         ))
       )}
     </div>

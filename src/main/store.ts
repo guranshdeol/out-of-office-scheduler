@@ -3,9 +3,11 @@ import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from '
 import { dirname, join } from 'node:path'
 import type { AppConfig } from '@shared/types'
 
-export const DEFAULT_MESSAGE = `Hi, I'm currently out of office and may have limited access to messages. I'll respond as soon as I return.
+export const DEFAULT_MESSAGE = `Thank you for your email. I'm out of the office until {end}, with limited access to email.
 
-Thank you.`
+I'll reply as soon as possible after I return.
+
+Kind regards`
 
 const defaults = (): AppConfig => ({
   accounts: [],
@@ -13,7 +15,8 @@ const defaults = (): AppConfig => ({
   settings: {
     launchAtLogin: true,
     calendarSubject: 'Out of office',
-    createCalendarEvent: true
+    createCalendarEvent: true,
+    checkForUpdates: true
   },
   stretches: [],
   calendarCleanups: []
@@ -32,7 +35,8 @@ export function loadConfig(): AppConfig {
       message: raw.message ?? base.message,
       settings: { ...base.settings, ...raw.settings },
       stretches: raw.stretches ?? base.stretches,
-      calendarCleanups: raw.calendarCleanups ?? base.calendarCleanups
+      calendarCleanups: raw.calendarCleanups ?? base.calendarCleanups,
+      updateNotifiedVersion: raw.updateNotifiedVersion
     }
   } catch (err) {
     console.error('Could not read config, starting fresh', err)

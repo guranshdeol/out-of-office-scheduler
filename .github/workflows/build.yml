@@ -47,11 +47,19 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      id-token: write # lets the attestation prove it was made by this workflow
+      attestations: write
     steps:
       - uses: actions/download-artifact@v4
         with:
           path: installers
           merge-multiple: true
+      - name: Write checksums
+        run: cd installers && sha256sum * > SHA256SUMS.txt
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: 'installers/*'
       - uses: softprops/action-gh-release@v2
         with:
           name: OOO Scheduler ${{ github.ref_name }}
@@ -68,3 +76,6 @@ jobs:
             | Linux | `.AppImage` or `.deb` for `x86_64` / `arm64` |
 
             Builds are not code-signed yet. See [Installing](https://github.com/${{ github.repository }}#installing) for the one-time macOS and Windows prompts.
+
+            **Verify a download:** compare it with `SHA256SUMS.txt`, or check where it was built with
+            `gh attestation verify <file> --repo ${{ github.repository }}`.
