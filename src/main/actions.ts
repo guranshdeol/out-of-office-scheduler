@@ -40,13 +40,14 @@ export async function runAccountTest(id: string): Promise<void> {
     setAccountStatus(id, { auth: 'connected', authError: undefined })
     const r = await testAccount(account.email, token)
     const ok = r.canSet && r.canCreateEvent
+    const at = Date.now()
     setAccountStatus(id, {
+      outlook: { snapshot: r.snapshot, at },
       test: {
         ok,
-        at: Date.now(),
+        at,
         canSet: r.canSet,
         canCreateEvent: r.canCreateEvent,
-        snapshot: r.snapshot,
         error: ok
           ? undefined
           : r.canSet
@@ -240,7 +241,8 @@ const createdBlock = (r: ApplyResult | undefined): boolean => r?.status === 'ok'
 
 async function turnOff(a: Account): Promise<string | undefined> {
   try {
-    await clearOoo(a.email, await getToken(a.homeAccountId))
+    const snapshot = await clearOoo(a.email, await getToken(a.homeAccountId))
+    setAccountStatus(a.id, { outlook: { snapshot, at: Date.now() } })
     return undefined
   } catch (err) {
     return `${a.nickname}: ${(err as Error).message}`
@@ -251,6 +253,7 @@ async function turnOff(a: Account): Promise<string | undefined> {
  * Removes a leave period. If it is set in Outlook and another leave is queued, the next leave is
  * applied straight away, which makes Exchange replace the old calendar block. Otherwise the
  * auto-reply is turned off and the user is reminded to delete the leftover block in Outlook.
+ * The account's oofBlock is left pointing at the cancelled block on purpose; see Account.oofBlock.
  */
 export async function cancelStretch(id: string): Promise<Outcome> {
   const config = getConfig()

@@ -21,6 +21,9 @@ function Format-OooTime {
     }
 }
 
+# CreateOOFEvent is left out on purpose: Get-MailboxAutoReplyConfiguration reports it as False
+# right after Set-MailboxAutoReplyConfiguration -CreateOOFEvent $true has created the calendar
+# block, so it says nothing reliable. Whether a block was asked for comes from the app's setting.
 function Get-OooSnapshot {
     param([Parameter(Mandatory)][string] $Upn)
     $c = Get-MailboxAutoReplyConfiguration -Identity $Upn
@@ -28,7 +31,6 @@ function Get-OooSnapshot {
         state            = "$($c.AutoReplyState)"
         start            = Format-OooTime $c.StartTime
         end              = Format-OooTime $c.EndTime
-        createOofEvent   = [bool]$c.CreateOOFEvent
         externalAudience = "$($c.ExternalAudience)"
     }
 }

@@ -13,7 +13,11 @@ export interface Account {
   /** MSAL home account id, set after the first successful sign-in. */
   homeAccountId?: string
   tenantId?: string
-  /** The out-of-office calendar block Exchange is currently tracking for this mailbox. */
+  /**
+   * The out-of-office calendar block Exchange is currently tracking for this mailbox. Kept when that
+   * leave is cancelled: Exchange still tracks the block and deletes it when the next block is created
+   * (unless it is over by then), which is how the scheduler knows the matching cleanup has gone.
+   */
   oofBlock?: { stretchId: string; startMs: number; endMs: number }
 }
 
@@ -36,7 +40,10 @@ export interface ApplyResult {
   readBack?: OooSnapshot
   /** Exchange reported times that differ from what was requested. */
   timeMismatch?: boolean
-  /** The apply asked Exchange to create the out-of-office calendar block. */
+  /**
+   * The apply asked Exchange to create the out-of-office calendar block. Taken from the setting,
+   * not the read-back: Exchange reports CreateOOFEvent as false even after creating the block.
+   */
   eventCreated?: boolean
   /** The auto-reply was turned off first so Exchange kept the previous, finished leave's block. */
   keptPrevious?: boolean
@@ -96,7 +103,7 @@ export interface OooSnapshot {
   state: string
   start?: OooTime | null
   end?: OooTime | null
-  createOofEvent?: boolean
+  // No createOofEvent: Exchange reads it back as false even after creating the block (see _common.ps1).
   externalAudience?: string
 }
 
@@ -108,13 +115,14 @@ export interface AccountTest {
   error?: string
   canSet?: boolean
   canCreateEvent?: boolean
-  snapshot?: OooSnapshot
 }
 
 export interface AccountStatus {
   auth: AuthStatus
   authError?: string
   test?: AccountTest
+  /** The schedule Exchange last reported for this mailbox, from a test, an apply or turning it off. */
+  outlook?: { snapshot: OooSnapshot; at: number }
   busy?: string
 }
 
