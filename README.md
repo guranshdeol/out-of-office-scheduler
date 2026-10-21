@@ -65,7 +65,8 @@ The app isn't code-signed yet, so your computer asks you to confirm the first la
 <br>
 
 1. Open the `.dmg` and drag **OOO Scheduler** into **Applications**.
-2. **Only if your Mac account isn't an administrator:** verify the download, then remove macOS's download flag.
+2. Open the app. When macOS says it *could not verify* it, click **Done** (not *Move to Trash*).
+3. **Only if your Mac account isn't an administrator:** verify the download, then remove macOS's download flag.
    - Download **`SHA256SUMS.txt`** from the same release into the same folder as the `.dmg`.
    - In Terminal, run (use `mac-x64.dmg` on an Intel Mac):
 
@@ -81,7 +82,6 @@ The app isn't code-signed yet, so your computer asks you to confirm the first la
      xattr -d com.apple.quarantine "/Applications/OOO Scheduler.app"
      ```
 
-3. Open the app. When macOS says it *could not verify* it, click **Done** (not *Move to Trash*).
 4. Go to **System Settings → Privacy & Security**, click **Open Anyway**, and enter your password if asked.
 5. If macOS asks to use *"OOO Scheduler Safe Storage"*, click **Always Allow**. This can come back after updates.
 
