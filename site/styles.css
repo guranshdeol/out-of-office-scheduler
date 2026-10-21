@@ -122,8 +122,27 @@ em {
   color: var(--mist);
 }
 
-.nav-links a:not(.pill-white):hover {
+.nav-links a:not(.pill-white):not(.pill-outline):hover {
   color: var(--paper);
+}
+
+/* GitHub link: same pill as Download, outlined so Download stays the main action. */
+.pill-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid var(--smoke);
+  border-radius: var(--r-pill);
+  padding: 6px 14px !important;
+  color: var(--paper) !important;
+  font-weight: 510;
+  margin-left: 8px;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.pill-outline:hover {
+  background: var(--obsidian);
+  border-color: var(--ash);
 }
 
 .pill-white {
@@ -597,7 +616,16 @@ details p {
     order: 0;
   }
 
-  .nav-links a:not(.pill-white) {
+  .nav-links a:not(.pill-white):not(.pill-outline) {
+    display: none;
+  }
+
+  .brand span {
+    white-space: nowrap;
+  }
+
+  /* Small screens: GitHub logo only. */
+  .pill-outline span {
     display: none;
   }
 
