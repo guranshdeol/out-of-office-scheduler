@@ -82,7 +82,7 @@ The app isn't code-signed yet, so your computer asks you to confirm the first la
      xattr -d com.apple.quarantine "/Applications/OOO Scheduler.app"
      ```
 
-4. Go to **System Settings → Privacy & Security**, click **Open Anyway**, and enter your password if asked.
+4. Go to **System Settings → Privacy & Security** and click **Open Anyway**. If you skipped step 3, macOS asks for an administrator name and password.
 5. If macOS asks to use *"OOO Scheduler Safe Storage"*, click **Always Allow**. This can come back after updates.
 
 On a company-managed Mac, follow your IT team's policy for installing apps.
